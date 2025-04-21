@@ -11,10 +11,22 @@ public class CSBS2 {
         }
     }
 
+    public static void floydsTriangle(int n) {
+        int counter = 1;
+        for (int row = 1; row <= n; row++) {
+            for (int col = 0; col < row; col++) {
+                System.out.print(counter + " ");
+                counter++;
+            }
+            System.out.println();
+        }
+    }
+
     public static void main(String[] args) {
-        numberSquare(1, 5);
+//        numberSquare(1, 5);
 //        for (int i = 0; i < 10; i++) {
 //            System.out.print(i%3 + ", ");
 //        }
+        floydsTriangle(5);
     }
 }
