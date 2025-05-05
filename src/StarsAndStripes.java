@@ -23,12 +23,18 @@ public class StarsAndStripes {
         g.drawLine(Dx, Dy, Bx, By);
         g.drawLine(Bx, By, Ex, Ey);
         g.drawLine(Ex, Ey, Cx, Cy);
+
+//        g.drawString("*", x, y);
     }
 
     public static void main(String[] args) {
         int height = 300, width = (int)(height*1.9);
         DrawingPanel panel = new DrawingPanel(width, height);
         Graphics g = panel.getGraphics();
-        drawStar(g, 50, 100, 100);
+        for (int row = 0; row < 5; row++ ) {
+            for (int col = 0; col < 5; col++) {
+                drawStar(g, 10, col*25, row*25);
+            }
+        }
     }
 }
