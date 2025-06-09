@@ -2,7 +2,6 @@
 https://www.chiark.greenend.org.uk/~sgtatham/puzzles/js/guess.html
  */
 
-import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
@@ -77,44 +76,57 @@ public class Mastermind {
 
     }
 
+    public static String code2String(int[] code) {
+        String result = "";
+        for (int i = 0; i < code.length; i++) {
+            result += code[i];
+        }
+        return result;
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
         // get the game parameters from the user
-        int code_length = 4;
+        int codeLength = 4;
         int domain = 6;         // number of "colors"
-        int guessAllowed = 12;
+        int guessesAllowed = 12;
 
         // generate a random code
-        int[] code = generateCode(code_length,domain);
+        int[] code = generateCode(codeLength,domain);
+//        int[] code = {3, 1, 3, 5};
 //        System.out.println(Arrays.toString(code));
 
         int numOfGuesses = 0;
-        while (numOfGuesses < guessAllowed) {
+        while (numOfGuesses < guessesAllowed) {
             // get the user's guess
-            String prompt = "Enter your " + code_length + " digit guess: ";
-            int[] guess = getGuess(scanner,prompt,code_length,domain);
             numOfGuesses++;
+            String prompt = "Enter your " + codeLength + " digit guess (" + numOfGuesses + "/" + guessesAllowed + "): ";
+            int[] guess = getGuess(scanner,prompt,codeLength,domain);
 
             // count pegs
-            boolean[] isCounted = new boolean[code_length];
 
             int blackPegs = 0;
             int whitePegs = 0;
+
             // count the "black pegs"
-            for (int i = 0; i < code_length; i++) {
+            for (int i = 0; i < codeLength; i++) {
                 if (guess[i] == code[i]) { // found a black peg
-                    isCounted[i] = true;
                     blackPegs++;
                 }
             }
 
             // count the "white pegs"
-            for (int i = 0; i < code_length; i++) { // loop through the guess
-                for (int j = 0; j < code_length; j++) { // loop through the code
-                    if (!isCounted[j] && guess[i] == code[j]) { // found a white peg
-                        isCounted[j] = true;
-                        whitePegs++;
+            boolean[] isCounted = new boolean[code.length]; // keep track of code digits already counted
+            for (int i = 0; i < guess.length; i++) {        // loop through the guess
+                if (guess[i] == code[i]) continue;          // skip if guess digit is black peg
+                for (int j = 0; j < code.length; j++) {     // loop through the code
+                    if (guess[i] == code[j]                 // if there is a match
+                            && code[j] != guess[j]          // and code digit is not a black peg
+                            && !isCounted[j]) {             // and hasn't already been counted
+                        isCounted[j] = true;                // mark as counted
+                        whitePegs++;                        // increment counter
+                        break;                              // stop trying to match this guess digit
                     }
                 }
             }
@@ -123,13 +135,12 @@ public class Mastermind {
             System.out.println("Black pegs: " + blackPegs);
             System.out.println("White pegs: " + whitePegs);
 
-            if (blackPegs == code_length) { // WIN!!!
+            if (blackPegs == codeLength) { // WIN!!!
                 System.out.println("You guessed the code in " + numOfGuesses + " guesses!");
-                numOfGuesses = guessAllowed;
-            } else if (numOfGuesses >= guessAllowed) { // LOSE :(
-                System.out.println("You lose :(");
+                numOfGuesses = guessesAllowed;
+            } else if (numOfGuesses >= guessesAllowed) { // LOSE :(
+                System.out.println("You lose :( The code was " + code2String(code) + ".");
             }
         }
-
     }
 }
